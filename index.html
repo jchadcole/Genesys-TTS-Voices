@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesys Generative Polly Voices | Evaluation Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(1.01); }
+        }
+        .animate-playing { animation: pulse-subtle 1.5s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 font-bold text-lg">
+                    G
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">Genesys Polly Evaluation</span>
+                    <span class="hidden sm:inline-block ml-2 text-xs px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-medium">Standardized Script</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Script View Modal Button -->
+                <button onclick="openScriptModal()" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                    <span>View Script</span>
+                </button>
+
+                <!-- GitHub Config / JSON Export -->
+                <button onclick="openConfigModal()" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white transition shadow-sm">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    <span>Config / JSON</span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-indigo-50/50 via-white to-slate-50 dark:from-slate-900/50 dark:via-slate-950 dark:to-slate-950 border-b border-slate-200 dark:border-slate-800/80">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 mb-4 border border-indigo-200 dark:border-indigo-800/60 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+                <span>Blind Evaluation Suite &bull; 7 Voice Models</span>
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3">
+                Genesys Generative Polly Voices
+            </h1>
+            <p class="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                All seven voices read the exact same benchmark briefing script to ensure unbiased comparison and accurate quality evaluation.
+            </p>
+        </div>
+    </section>
+
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Voice Roster (7 Models)</h2>
+            <span class="text-xs text-slate-400 dark:text-slate-500">Click preview to evaluate audio</span>
+        </div>
+
+        <div id="voiceRowsContainer" class="space-y-3">
+            <!-- Populated via JavaScript -->
+        </div>
+
+    </main>
+
+    <div id="scriptModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                    <span>Standardized Briefing Script</span>
+                </h3>
+                <button onclick="closeScriptModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                Every voice recording evaluates this identical script for consistent benchmarking:
+            </p>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm leading-relaxed mb-4 font-mono">
+                "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="copyStandardScript()" class="px-4 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-500 transition shadow-md shadow-indigo-500/20">Copy Script</button>
+                <button onclick="closeScriptModal()" class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    <span>GitHub Pages Hosting & voices.json Setup</span>
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4 overflow-y-auto flex-1 pr-1 text-sm text-slate-600 dark:text-slate-300">
+                <div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800">
+                    <h4 class="font-semibold text-indigo-900 dark:text-indigo-200 mb-1">GitHub Hosting Instructions:</h4>
+                    <ol class="list-decimal list-inside space-y-1 text-xs text-indigo-800 dark:text-indigo-300">
+                        <li>Upload this <code class="bg-indigo-100 dark:bg-indigo-900 px-1 py-0.5 rounded">index.html</code> to your public GitHub repository.</li>
+                        <li>Place your 7 audio files (e.g. <code class="bg-indigo-100 dark:bg-indigo-900 px-1 py-0.5 rounded">danielle.mp3</code>, <code class="bg-indigo-100 dark:bg-indigo-900 px-1 py-0.5 rounded">joanna.mp3</code>) in an <code class="bg-indigo-100 dark:bg-indigo-900 px-1 py-0.5 rounded">audio/</code> folder.</li>
+                        <li>Enable GitHub Pages in your repository settings.</li>
+                    </ol>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="font-medium text-slate-800 dark:text-slate-200 text-xs uppercase tracking-wider">Current <code class="text-indigo-600">voices.json</code> payload:</label>
+                        <button onclick="copyJsonConfig()" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Copy JSON</button>
+                    </div>
+                    <pre id="jsonConfigOutput" class="p-3 rounded-xl bg-slate-900 text-slate-200 text-xs font-mono overflow-x-auto max-h-48 border border-slate-800"></pre>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button onclick="closeConfigModal()" class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 transition">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto py-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-center text-sm text-slate-500 dark:text-slate-400">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 Genesys Generative Polly Evaluation Suite.</p>
+            <div class="flex items-center space-x-6 text-xs">
+                <span class="flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>7 Audio Streams Ready</span>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // The 7 Genesys Generative Polly Voices
+        const voicesData = [
+            {
+                id: "danielle",
+                name: "Danielle",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "joanna",
+                name: "Joanna",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/rain_heavy.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "ruth",
+                name: "Ruth",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/daytime_forest_bonfire.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "salli",
+                name: "Salli",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/wind_gust.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "matthew",
+                name: "Matthew",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/computer_keyboard.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "stephen",
+                name: "Stephen",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_ambient.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            },
+            {
+                id: "tiffany",
+                name: "Tiffany",
+                audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+                defaultText: "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data."
+            }
+        ];
+
+        let currentAudio = null;
+        let currentPlayingId = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderVoiceRows();
+            updateJsonConfigDisplay();
+            
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+
+        function renderVoiceRows() {
+            const container = document.getElementById('voiceRowsContainer');
+            
+            container.innerHTML = voicesData.map((voice, idx) => `
+                <div id="row-${voice.id}" class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row items-center justify-between gap-4">
+                    
+                    <!-- Left: Number & Name -->
+                    <div class="flex items-center space-x-4 w-full sm:w-56">
+                        <span class="text-xs font-mono text-slate-400 dark:text-slate-600 font-semibold w-5">#${idx + 1}</span>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-sm">
+                                ${voice.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-900 dark:text-white">${voice.name}</h3>
+                                <span id="status-${voice.id}" class="text-xs text-slate-400 font-medium">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Middle: Progress Bar -->
+                    <div class="w-full sm:flex-1 px-0 sm:px-4">
+                        <div class="flex items-center justify-between mb-1 text-[11px] text-slate-400 font-mono">
+                            <span id="timelabel-${voice.id}">0:00</span>
+                            <span>Standard Script</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden cursor-pointer" onclick="seekAudio(event, '${voice.id}')">
+                            <div id="progress-${voice.id}" class="bg-indigo-600 h-full w-0 transition-all duration-100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Play Button & Script Copy -->
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button onclick="togglePlay('${voice.id}', '${voice.audioUrl}')" id="play-btn-${voice.id}" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 py-2 px-5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-sm shadow-indigo-500/20">
+                            <svg id="play-icon-${voice.id}" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <span id="play-text-${voice.id}">Preview</span>
+                        </button>
+                    </div>
+
+                </div>
+            `).join('');
+        }
+
+        function togglePlay(id, url) {
+            const playText = document.getElementById(`play-text-${id}`);
+            const playIcon = document.getElementById(`play-icon-${id}`);
+            const statusLabel = document.getElementById(`status-${id}`);
+            const rowCard = document.getElementById(`row-${id}`);
+
+            if (currentPlayingId === id && currentAudio) {
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    playText.innerText = "Pause";
+                    playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                    statusLabel.innerText = "Playing...";
+                    rowCard.classList.add('animate-playing', 'ring-2', 'ring-indigo-500');
+                } else {
+                    currentAudio.pause();
+                    playText.innerText = "Resume";
+                    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                    statusLabel.innerText = "Paused";
+                    rowCard.classList.remove('animate-playing', 'ring-2', 'ring-indigo-500');
+                }
+                return;
+            }
+
+            if (currentAudio) {
+                currentAudio.pause();
+                if (currentPlayingId) {
+                    resetRowState(currentPlayingId);
+                }
+            }
+
+            currentAudio = new Audio(url);
+            currentPlayingId = id;
+
+            playText.innerText = "Loading...";
+            statusLabel.innerText = "Buffering...";
+
+            currentAudio.play().then(() => {
+                playText.innerText = "Pause";
+                playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                statusLabel.innerText = "Playing...";
+                rowCard.classList.add('animate-playing', 'ring-2', 'ring-indigo-500');
+            }).catch(e => {
+                console.warn("Audio playback fallback:", e);
+                playText.innerText = "Playing...";
+                statusLabel.innerText = "Simulating playback...";
+                rowCard.classList.add('animate-playing', 'ring-2', 'ring-indigo-500');
+            });
+
+            currentAudio.ontimeupdate = () => {
+                if (currentAudio.duration) {
+                    const pct = (currentAudio.currentTime / currentAudio.duration) * 100;
+                    const prog = document.getElementById(`progress-${id}`);
+                    if (prog) prog.style.width = pct + '%';
+                    
+                    const mins = Math.floor(currentAudio.currentTime / 60);
+                    const secs = Math.floor(currentAudio.currentTime % 60);
+                    const timeLabel = document.getElementById(`timelabel-${id}`);
+                    if (timeLabel) timeLabel.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
+            };
+
+            currentAudio.onended = () => {
+                resetRowState(id);
+            };
+        }
+
+        function resetRowState(id) {
+            const playText = document.getElementById(`play-text-${id}`);
+            const playIcon = document.getElementById(`play-icon-${id}`);
+            const statusLabel = document.getElementById(`status-${id}`);
+            const rowCard = document.getElementById(`row-${id}`);
+            const prog = document.getElementById(`progress-${id}`);
+            const timeLabel = document.getElementById(`timelabel-${id}`);
+
+            if (playText) playText.innerText = "Preview";
+            if (playIcon) playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            if (statusLabel) statusLabel.innerText = "Ready";
+            if (rowCard) rowCard.classList.remove('animate-playing', 'ring-2', 'ring-indigo-500');
+            if (prog) prog.style.width = '0%';
+            if (timeLabel) timeLabel.innerText = '0:00';
+        }
+
+        function openScriptModal() {
+            document.getElementById('scriptModal').classList.remove('hidden');
+        }
+        function closeScriptModal() {
+            document.getElementById('scriptModal').classList.add('hidden');
+        }
+        function copyStandardScript() {
+            const scriptText = "Welcome back to the morning briefing. Today is Friday, October 2nd, and looking across our Q3 metrics, total enterprise bookings reached $4.8 billion—surpassing our baseline target by nearly 14.2 percent. However, as the lead project manager noted during yesterday's review, we still need to close out three legacy accounts before the wind shifts at the end of the quarter. Let's take a closer look at the data.";
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(scriptText);
+            }
+            alert("Standard briefing script copied to clipboard!");
+        }
+
+        function openConfigModal() {
+            document.getElementById('configModal').classList.remove('hidden');
+            updateJsonConfigDisplay();
+        }
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+        function updateJsonConfigDisplay() {
+            document.getElementById('jsonConfigOutput').innerText = JSON.stringify(voicesData, null, 2);
+        }
+        function copyJsonConfig() {
+            const text = JSON.stringify(voicesData, null, 2);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            }
+            alert("voices.json configuration copied to clipboard!");
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>
